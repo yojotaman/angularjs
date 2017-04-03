@@ -20,3 +20,4 @@ var MyPerson = (function () {
 // interpolación: la forma de mezclar variables con strings
 var personaTres = new MyPerson('Jonathan', 'Salazar');
 console.log(personaTres.getSaludo());
+
