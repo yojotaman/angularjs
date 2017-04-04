@@ -3,6 +3,21 @@
 </h1>
 
 <div *ngFor="let voto of votos">
-  <input-component voto="{{voto.title}}"></input-component>
+  <input-component voto="{{voto.title}}" (addVoto)="addVoto($event)"></input-component>
 </div>
 
+<h3 gigant myHighlight>{{votacion}}</h3>
+
+<h2>Conversor</h2>
+
+<div>Cantidad: 
+  <input [(ngModel)]="cantidad"/>
+</div>
+
+<div>1 dolar es : 
+  <input [(ngModel)]="factor">
+</div>
+
+<p>    
+  Oh es: {{cantidad | conversorPipe: factor}}
+</p>
