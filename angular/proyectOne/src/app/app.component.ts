@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, NgZone } from '@angular/core';
 
 import { InputComponent } from './input/input.component';
 
@@ -37,7 +37,8 @@ export class AppComponent {
   constructor (
     private ticketService: TicketService,
     private fb: FormBuilder,
-    private store: Store<AppState>
+    private store: Store<AppState>,
+    private _ngZone: NgZone
     ){
     this.counter = store.select('counter');
     this.tickets = ticketService.getTickets(); // Aquí puedo hacer el llamado del metodo para //obtener todos los ticktets  
@@ -70,5 +71,41 @@ export class AppComponent {
   onSubmit(value:string): void {
     console.log('El fomulario tiene:', value);
   }
+
+//http://thoughtram.io/
+  progress: number = 0;
+  label: string;
+
+  processWithinAngularZone() {
+    this.label = 'inside';
+    this.progress = 0;
+    this._increaseProgress(() => console.log('Finalizado sin Zone!'));
+  }
+  processOutsideOfAngularZone() {
+    this.label = 'outside';
+    this.progress = 0;
+    this._ngZone.runOutsideAngular(() => {
+      this._increaseProgress(() => {
+        this._ngZone.run(() => { 
+          console.log('Finalizado con Zone!') 
+        });
+      
+      });
+    });
+  }
+  
+  _increaseProgress(doneCallback: () => void) {
+    this.progress += 1;
+    console.log(`Progreso: ${this.progress}%`);
+    
+    if (this.progress < 100) {
+      window.setTimeout(() => {
+        this._increaseProgress(doneCallback);
+      }, 10);
+    } 
+    else {
+      doneCallback();
+    }
+  }  
     
 }
